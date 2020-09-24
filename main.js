@@ -133,11 +133,11 @@ class ServiceNowAdapter extends EventEmitter {
       * responseData parameter.
       */
       this.emitOnline();
-      log.debug(`\nResponse returned from GET request:\n${JSON.stringify(data)}`);
-      callbackData = response;
+      log.debug(`\nResponse returned from GET request:\n${JSON.stringify(result)}`);
+      callbackData = result;
    }
  });
- return callback(callbackData, callbackError);
+ //return callback(callbackData, callbackError);
 }
 
   /**
