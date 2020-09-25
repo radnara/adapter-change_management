@@ -193,13 +193,48 @@ class ServiceNowAdapter extends EventEmitter {
      * Note how the object was instantiated in the constructor().
      * get() takes a callback function.
      */
-    //this.connector.get((data, error) => {
-    //if (error) {
-    //  console.error(`\nError returned from GET request:\n${JSON.stringify(error)}`);
-    //}
-    //console.log(`\nResponse returned from GET request:\n${JSON.stringify(data)}`)
-    //});
-    this.connector.get(callback);
+    this.connector.get((data, error) => {
+        if (error) {
+        console.error(`\nError returned from GET request:\n${JSON.stringify(error)}`);
+        }
+        console.log(`\nResponse returned from GET request:\n${JSON.stringify(data)}`);
+        //var jsData = JSON.parse(data);
+        if (data.containskey("body")) {
+            var body = data.get("body");
+            var jsBody = JSON.parse(body);
+            var jsRes = jsBody.get("result");
+            var finRes = [];
+            
+            for (i = 0; i < jsRes.length; i++) {
+                var finObj = {change_ticket_number:"", active:"", priority:"", description:"", work_start:"", work_end:"", change_ticket_key:""};
+                if (jsRes[i].containskey("number")) {
+                    finObj.change_ticket_number = jsRes[i].get("number");
+                }
+                if (jsRes[i].containskey("active")) {
+                    finObj.active = jsRes[i].get("active");
+                }
+                if (jsRes[i].containskey("priority")) {
+                    finObj.priority = jsRes[i].get("priority");
+                }
+                if (jsRes[i].containskey("description")) {
+                    finObj.description = jsRes[i].get("description");
+                }
+                if (jsRes[i].containskey("work_start")) {
+                    finObj.work_start = jsRes[i].get("work_start");
+                }
+                if (jsRes[i].containskey("work_end")) {
+                    finObj.work_end = jsRes[i].get("work_end");
+                }
+                if (jsRes[i].containskey("sys_id")) {
+                    finObj.change_ticket_key = jsRes[i].get("sys_id");
+                }
+                finRes[i].push(finObj);
+
+            }
+        }
+    });
+    //this.connector.get(callback);
+    return finRes;
   }
 
   /**
@@ -221,7 +256,7 @@ class ServiceNowAdapter extends EventEmitter {
     //this.connector.post((data, error) => {
     //if (error) {
     //  console.error(`\nError returned from POST request:\n${JSON.stringify(error)}`);
-    //}
+    // }
     //console.log(`\nResponse returned from POST request:\n${JSON.stringify(data)}`)
     //});
     this.connector.post(callback);
