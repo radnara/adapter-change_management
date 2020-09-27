@@ -193,18 +193,43 @@ class ServiceNowAdapter extends EventEmitter {
      * Note how the object was instantiated in the constructor().
      * get() takes a callback function.
      */
+    //var finRes = [];
     this.connector.get((data, error) => {
         if (error) {
         console.error(`\nError returned from GET request:\n${JSON.stringify(error)}`);
         }
         console.log(`\nResponse returned from GET request:\n${JSON.stringify(data)}`);
+        //console.log(`\nResponse returned from GET request:\n${data}`);
         //var jsData = JSON.parse(data);
-        if (data.containskey("body")) {
-            var body = data.get("body");
+        //var jsData = JSON.stringify(data);
+        //var jsData = JSON.stringify(data);
+        
+        if (data.hasOwnProperty("body")) {
+            var body = data.body;
+            console.log(`\nBODY:\n${JSON.stringify(body)}`);
             var jsBody = JSON.parse(body);
-            var jsRes = jsBody.get("result");
-            var finRes = [];
+            var res = jsBody.result;
+            //var jsRes = jsBody.get("result");
+            //var finRes = [];
+            console.log(`\nRESULT:\n${JSON.stringify(res)}`);
+
+            //var jsRes = JSON.parse(res);
+            //console.log(`\nRESULT len:\n${(jsRes.length)}`);
+
+            var finObj = {change_ticket_number:"", active:"", priority:"", description:"", work_start:"", work_end:"", change_ticket_key:""};
+            finObj.change_ticket_number = res[0].number;
+            finObj.active = res[0].active;
+            finObj.priority = res[0].priority;
+            finObj.description = res[0].description;
+            finObj.work_start = res[0].work_start;
+            finObj.work_end = res[0].work_end;
+            finObj.change_ticket_key = res[0].sys_id;
+            //var num = res[0].number;
+            //jsNum = JSON.parse(num);
+            console.log(`\nNUMBER:\n${(finObj.change_ticket_number)}`);
+            console.log(`\nFINAL:\n${JSON.stringify(finObj)}`);
             
+            /****
             for (i = 0; i < jsRes.length; i++) {
                 var finObj = {change_ticket_number:"", active:"", priority:"", description:"", work_start:"", work_end:"", change_ticket_key:""};
                 if (jsRes[i].containskey("number")) {
@@ -231,10 +256,14 @@ class ServiceNowAdapter extends EventEmitter {
                 finRes[i].push(finObj);
 
             }
+            **/
         }
+    
+        return callback(finObj, error);
     });
     //this.connector.get(callback);
-    return finRes;
+    //return finRes;
+    //return callback(data, error);
   }
 
   /**
