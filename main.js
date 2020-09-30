@@ -95,6 +95,7 @@ class ServiceNowAdapter extends EventEmitter {
  */
  healthcheck(callback) {
   this.getRecord((result, error) => {
+  //this.postRecord((result, error) => {
    /**
     * For this lab, complete the if else conditional
     * statements that check if an error exists
@@ -193,28 +194,18 @@ class ServiceNowAdapter extends EventEmitter {
      * Note how the object was instantiated in the constructor().
      * get() takes a callback function.
      */
-    //var finRes = [];
     this.connector.get((data, error) => {
         if (error) {
         console.error(`\nError returned from GET request:\n${JSON.stringify(error)}`);
         }
         console.log(`\nResponse returned from GET request:\n${JSON.stringify(data)}`);
-        //console.log(`\nResponse returned from GET request:\n${data}`);
-        //var jsData = JSON.parse(data);
-        //var jsData = JSON.stringify(data);
-        //var jsData = JSON.stringify(data);
         
         if (data.hasOwnProperty("body")) {
             var body = data.body;
-            console.log(`\nBODY:\n${JSON.stringify(body)}`);
+            //console.log(`\nBODY:\n${JSON.stringify(body)}`);
             var jsBody = JSON.parse(body);
             var res = jsBody.result;
-            //var jsRes = jsBody.get("result");
-            //var finRes = [];
-            console.log(`\nRESULT:\n${JSON.stringify(res)}`);
-
-            //var jsRes = JSON.parse(res);
-            //console.log(`\nRESULT len:\n${(jsRes.length)}`);
+            //console.log(`\nRESULT:\n${JSON.stringify(res)}`);
 
             var finObj = {change_ticket_number:"", active:"", priority:"", description:"", work_start:"", work_end:"", change_ticket_key:""};
             finObj.change_ticket_number = res[0].number;
@@ -224,46 +215,14 @@ class ServiceNowAdapter extends EventEmitter {
             finObj.work_start = res[0].work_start;
             finObj.work_end = res[0].work_end;
             finObj.change_ticket_key = res[0].sys_id;
-            //var num = res[0].number;
-            //jsNum = JSON.parse(num);
+            
             console.log(`\nNUMBER:\n${(finObj.change_ticket_number)}`);
             console.log(`\nFINAL:\n${JSON.stringify(finObj)}`);
-            
-            /****
-            for (i = 0; i < jsRes.length; i++) {
-                var finObj = {change_ticket_number:"", active:"", priority:"", description:"", work_start:"", work_end:"", change_ticket_key:""};
-                if (jsRes[i].containskey("number")) {
-                    finObj.change_ticket_number = jsRes[i].get("number");
-                }
-                if (jsRes[i].containskey("active")) {
-                    finObj.active = jsRes[i].get("active");
-                }
-                if (jsRes[i].containskey("priority")) {
-                    finObj.priority = jsRes[i].get("priority");
-                }
-                if (jsRes[i].containskey("description")) {
-                    finObj.description = jsRes[i].get("description");
-                }
-                if (jsRes[i].containskey("work_start")) {
-                    finObj.work_start = jsRes[i].get("work_start");
-                }
-                if (jsRes[i].containskey("work_end")) {
-                    finObj.work_end = jsRes[i].get("work_end");
-                }
-                if (jsRes[i].containskey("sys_id")) {
-                    finObj.change_ticket_key = jsRes[i].get("sys_id");
-                }
-                finRes[i].push(finObj);
-
-            }
-            **/
         }
     
         return callback(finObj, error);
     });
     //this.connector.get(callback);
-    //return finRes;
-    //return callback(data, error);
   }
 
   /**
@@ -282,13 +241,37 @@ class ServiceNowAdapter extends EventEmitter {
      * Note how the object was instantiated in the constructor().
      * post() takes a callback function.
      */
-    //this.connector.post((data, error) => {
-    //if (error) {
-    //  console.error(`\nError returned from POST request:\n${JSON.stringify(error)}`);
-    // }
-    //console.log(`\nResponse returned from POST request:\n${JSON.stringify(data)}`)
-    //});
-    this.connector.post(callback);
+     this.connector.post((data, error) => {
+     if (error) {
+       console.error(`\nError returned from POST request:\n${JSON.stringify(error)}`);
+     }
+     console.log(`\nResponse returned from POST request:\n${JSON.stringify(data)}`);
+
+     if (data.hasOwnProperty("body")) {
+            var body = data.body;
+            //console.log(`\n POST BODY:\n${JSON.stringify(body)}`);
+            var jsBody = JSON.parse(body);
+            var res = jsBody.result;
+            //console.log(`\nPOST RESULT:\n${JSON.stringify(res)}`);
+
+            var finObj = {change_ticket_number:"", active:"", priority:"", description:"", work_start:"", work_end:"", change_ticket_key:""};
+            finObj.change_ticket_number = res.number;
+            console.log(`\nNUMBER:\n${(finObj.change_ticket_number)}`);
+            finObj.active = res.active;
+            finObj.priority = res.priority;
+            finObj.description = res.description;
+            finObj.work_start = res.work_start;
+            finObj.work_end = res.work_end;
+            finObj.change_ticket_key = res.sys_id;
+           
+            console.log(`\nPOST NUMBER:\n${(finObj.change_ticket_number)}`);
+            console.log(`\nPOST FINAL:\n${JSON.stringify(finObj)}`);
+     }
+    
+     return callback(finObj, error);
+    
+    });
+    //this.connector.post(callback);
   }
 }
 
